@@ -43,6 +43,12 @@ public class LoginUseCaseSyncJackTest {
 	}
 
 	// 로그인 성공하면 - auth token 이 cache 된다.
+	@Test
+	public void loginSync_success_authTokenCached() throws Exception {
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mAuthTokenCacheTd.getAuthToken(), is(AUTH_TOKEN));
+	}
+
 	// 로그인 실패하면 - auth token 이 변하지 않는다.
 	// 로그인 성공하면 - login event 가 EventBusPoster 로 post 된다.
 	// 로그인 실패하면 - login event 가 EventBusPoster 에 post 되지 않는다.
@@ -62,7 +68,7 @@ public class LoginUseCaseSyncJackTest {
 		public EndpointResult loginSync(String username, String password) throws NetworkErrorException {
 			mUsername = username;
 			mPassword = password;
-			return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.GENERAL_ERROR, AUTH_TOKEN);
+			return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.AUTH_ERROR, AUTH_TOKEN);
 		}
 	}
 
