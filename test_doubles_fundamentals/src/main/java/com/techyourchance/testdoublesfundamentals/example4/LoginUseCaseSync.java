@@ -31,13 +31,12 @@ public class LoginUseCaseSync {
         try {
             endpointEndpointResult = mLoginHttpEndpointSync.loginSync(username, password);
         } catch (NetworkErrorException e) {
-            return UseCaseResult.FAILURE;
+            return UseCaseResult.NETWORK_ERROR;
         }
-
-        mEventBusPoster.postEvent(new LoggedInEvent());
 
         if (isSuccessfulEndpointResult(endpointEndpointResult)) {
             mAuthTokenCache.cacheAuthToken(endpointEndpointResult.getAuthToken());
+            mEventBusPoster.postEvent(new LoggedInEvent());
             return UseCaseResult.SUCCESS;
         } else {
             return UseCaseResult.FAILURE;
