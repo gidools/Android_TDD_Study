@@ -73,14 +73,17 @@ public class LoginUseCaseSyncJackTest {
 	}
 
 	private static class AuthTokenCacheTd implements AuthTokenCache {
+
+		private String mAuthToken;
+
 		@Override
 		public void cacheAuthToken(String authToken) {
-
+			mAuthToken = authToken;
 		}
 
 		@Override
 		public String getAuthToken() {
-			return null;
+			return mAuthToken;
 		}
 	}
 
