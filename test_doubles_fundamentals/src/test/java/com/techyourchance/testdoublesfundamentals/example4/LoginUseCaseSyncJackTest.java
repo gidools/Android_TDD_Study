@@ -59,6 +59,14 @@ public class LoginUseCaseSyncJackTest {
 		assertThat(mAuthTokenCacheTd.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
 	}
 
+	// 인증 에러인 경우
+	@Test
+	public void loginSync_authError_authTokenNotCached() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsAuthError = true;
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mAuthTokenCacheTd.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
+	}
+
 	// 서버 에러인 경우
 	@Test
 	public void loginSync_serverError_authTokenNotCached() throws Exception {
