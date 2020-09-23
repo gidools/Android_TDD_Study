@@ -105,8 +105,41 @@ public class LoginUseCaseSyncJackTest {
 	}
 
 	// 로그인 성공하면 - Success return 된다.
+	@Test
+	public void loginSync_success_successReturned() throws Exception {
+		UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(result, is(UseCaseResult.SUCCESS));
+	}
+
 	// 로그인 실패하면 - Fail return 된다.
+	@Test
+	public void loginSync_serverError_failureReturned() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsServerError = true;
+		UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(result, is(UseCaseResult.FAILURE));
+	}
+
+	@Test
+	public void loginSync_authError_failureReturned() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsAuthError = true;
+		UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(result, is(UseCaseResult.FAILURE));
+	}
+
+	@Test
+	public void loginSync_generalError_failureReturned() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsGeneralError = true;
+		UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(result, is(UseCaseResult.FAILURE));
+	}
+
 	// 네트워크 에러면 - Network error 가 return 된다.
+	@Test
+	public void loginSync_networkError_networkErrorReturned() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsNetworkError = true;
+		UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(result, is(UseCaseResult.NETWORK_ERROR));
+	}
 
 	// ---------------------------------------------------------------------------------------------
 	// Helper classes
