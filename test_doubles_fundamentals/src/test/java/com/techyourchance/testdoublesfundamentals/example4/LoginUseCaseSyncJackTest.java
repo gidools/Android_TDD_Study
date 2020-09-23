@@ -62,9 +62,7 @@ public class LoginUseCaseSyncJackTest {
 		public EndpointResult loginSync(String username, String password) throws NetworkErrorException {
 			mUsername = username;
 			mPassword = password;
-			// FIXME : Jack
-            return null;
-			//return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.GENERAL_ERROR, AUTH_TOKEN);
+			return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.GENERAL_ERROR, AUTH_TOKEN);
 		}
 	}
 
