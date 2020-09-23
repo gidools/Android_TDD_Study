@@ -160,7 +160,7 @@ public class LoginUseCaseSyncJackTest {
 
 		@Override
 		public void postEvent(Object event) {
-
+			mEvent = event;
 		}
 	}
 }
