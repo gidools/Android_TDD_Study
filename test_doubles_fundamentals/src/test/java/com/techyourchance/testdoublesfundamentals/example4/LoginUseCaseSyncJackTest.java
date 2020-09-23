@@ -16,9 +16,10 @@ import static org.junit.Assert.assertThat;
 
 public class LoginUseCaseSyncJackTest {
 
-	public static final String USERNAME = "Username";
-	public static final String PASSWORD = "Password";
-	public static final String AUTH_TOKEN = "authToken";
+	private static final String USERNAME = "Username";
+	private static final String PASSWORD = "Password";
+	private static final String AUTH_TOKEN = "authToken";
+	private static final String NON_INITIALIZED_AUTH_TOKEN = "noAuthToken";
 
 	LoginHttpEndpointSyncTd mLoginHttpEndpointSyncTd;
 	AuthTokenCacheTd mAuthTokenCacheTd;
@@ -50,6 +51,13 @@ public class LoginUseCaseSyncJackTest {
 	}
 
 	// 로그인 실패하면 - auth token 이 변하지 않는다.
+	@Test
+	public void loginSync_generalError_authTokenNotCached() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsGeneralError = true;
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mAuthTokenCacheTd.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
+	}
+
 	// 로그인 성공하면 - login event 가 EventBusPoster 로 post 된다.
 	// 로그인 실패하면 - login event 가 EventBusPoster 에 post 되지 않는다.
 	// 로그인 성공하면 - Success return 된다.
@@ -63,6 +71,7 @@ public class LoginUseCaseSyncJackTest {
 
 		public String mUsername;
 		public String mPassword;
+		public boolean mIsGeneralError;
 
 		@Override
 		public EndpointResult loginSync(String username, String password) throws NetworkErrorException {
