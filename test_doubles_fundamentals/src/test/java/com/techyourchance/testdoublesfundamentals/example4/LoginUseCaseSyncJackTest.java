@@ -68,7 +68,7 @@ public class LoginUseCaseSyncJackTest {
 		public EndpointResult loginSync(String username, String password) throws NetworkErrorException {
 			mUsername = username;
 			mPassword = password;
-			return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.AUTH_ERROR, AUTH_TOKEN);
+			return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.SUCCESS, AUTH_TOKEN);
 		}
 	}
 
