@@ -76,7 +76,34 @@ public class LoginUseCaseSyncJackTest {
 	}
 
 	// 로그인 성공하면 - login event 가 EventBusPoster 로 post 된다.
+	@Test
+	public void loginSync_success_loggedInEventPosted() throws Exception {
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mEventBusPosterTd.mEvent, is(instanceOf(LoggedInEvent.class)));
+	}
+
 	// 로그인 실패하면 - login event 가 EventBusPoster 에 post 되지 않는다.
+	@Test
+	public void loginSync_generalError_noInteractionWithEventBusPoster() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsGeneralError = true;
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mEventBusPosterTd.mInteractionsCount, is(0));
+	}
+
+	@Test
+	public void loginSync_authError_noInteractionWithEventBusPoster() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsAuthError = true;
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mEventBusPosterTd.mInteractionsCount, is(0));
+	}
+
+	@Test
+	public void loginSync_serverError_noInteractionWithEventBusPoster() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsServerError = true;
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mEventBusPosterTd.mInteractionsCount, is(0));
+	}
+
 	// 로그인 성공하면 - Success return 된다.
 	// 로그인 실패하면 - Fail return 된다.
 	// 네트워크 에러면 - Network error 가 return 된다.
@@ -127,6 +154,10 @@ public class LoginUseCaseSyncJackTest {
 	}
 
 	private static class EventBusPosterTd implements EventBusPoster {
+
+		public Object mEvent;
+		public int mInteractionsCount;
+
 		@Override
 		public void postEvent(Object event) {
 
