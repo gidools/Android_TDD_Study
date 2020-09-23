@@ -51,9 +51,18 @@ public class LoginUseCaseSyncJackTest {
 	}
 
 	// 로그인 실패하면 - auth token 이 변하지 않는다.
+	// EndpointResultStatus 를 보니 여러 에러 상황이 있으니 이걸 참고로 예외 처리함
 	@Test
 	public void loginSync_generalError_authTokenNotCached() throws Exception {
 		mLoginHttpEndpointSyncTd.mIsGeneralError = true;
+		SUT.loginSync(USERNAME, PASSWORD);
+		assertThat(mAuthTokenCacheTd.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
+	}
+
+	// 서버 에러인 경우
+	@Test
+	public void loginSync_serverError_authTokenNotCached() throws Exception {
+		mLoginHttpEndpointSyncTd.mIsServerError = true;
 		SUT.loginSync(USERNAME, PASSWORD);
 		assertThat(mAuthTokenCacheTd.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
 	}
@@ -72,6 +81,9 @@ public class LoginUseCaseSyncJackTest {
 		public String mUsername;
 		public String mPassword;
 		public boolean mIsGeneralError;
+		private boolean mIsAuthError;
+		private boolean mIsServerError;
+		private boolean mIsNetworkError;
 
 		@Override
 		public EndpointResult loginSync(String username, String password) throws NetworkErrorException {
@@ -79,8 +91,14 @@ public class LoginUseCaseSyncJackTest {
 			mPassword = password;
 			if (mIsGeneralError) {
 				return new EndpointResult(EndpointResultStatus.GENERAL_ERROR, "");
+			} else if (mIsAuthError) {
+				return new EndpointResult(EndpointResultStatus.AUTH_ERROR, "");
+			}  else if (mIsServerError) {
+				return new EndpointResult(EndpointResultStatus.SERVER_ERROR, "");
+			} else if (mIsNetworkError) {
+				throw new NetworkErrorException();
 			} else {
-				return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.SUCCESS, AUTH_TOKEN);
+				return new EndpointResult(EndpointResultStatus.SUCCESS, AUTH_TOKEN);
 			}
 		}
 	}
