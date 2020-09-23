@@ -77,13 +77,17 @@ public class LoginUseCaseSyncJackTest {
 		public EndpointResult loginSync(String username, String password) throws NetworkErrorException {
 			mUsername = username;
 			mPassword = password;
-			return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.SUCCESS, AUTH_TOKEN);
+			if (mIsGeneralError) {
+				return new EndpointResult(EndpointResultStatus.GENERAL_ERROR, "");
+			} else {
+				return new LoginHttpEndpointSync.EndpointResult(EndpointResultStatus.SUCCESS, AUTH_TOKEN);
+			}
 		}
 	}
 
 	private static class AuthTokenCacheTd implements AuthTokenCache {
 
-		private String mAuthToken;
+		private String mAuthToken = NON_INITIALIZED_AUTH_TOKEN;
 
 		@Override
 		public void cacheAuthToken(String authToken) {
