@@ -51,6 +51,7 @@ public class FetchUserProfileUseCaseSyncTest {
         assertThat(usersCacheTd.userId, is(USER_ID));
         assertThat(usersCacheTd.fullName, is(USER_FULL_NAME));
         assertThat(usersCacheTd.imageUrl, is(PROFILE_IMG_URL));
+        assertThat(usersCacheTd.cachedCount, is(1));
     }
 
     // General 에러 발생하면 UserCache 에 저장되지 않는다.
@@ -110,12 +111,15 @@ public class FetchUserProfileUseCaseSyncTest {
         public String userId = EMPTY_USER_ID;
         public String fullName;
         public String imageUrl;
+        public int cachedCount;
 
         @Override
         public void cacheUser(User user) {
             this.userId = user.getUserId();
             this.fullName = user.getFullName();
             this.imageUrl = user.getImageUrl();
+
+            cachedCount++;
         }
 
         @Nullable
