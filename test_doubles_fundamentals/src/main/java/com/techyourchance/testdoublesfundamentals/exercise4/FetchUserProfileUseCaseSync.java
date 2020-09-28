@@ -30,8 +30,8 @@ public class FetchUserProfileUseCaseSync {
             endpointResult = mUserProfileHttpEndpointSync.getUserProfile(userId);
             // the bug here is that I don't check for successful result and it's also a duplication
             // of the call later in this method
-            mUsersCache.cacheUser(
-                    new User(userId, endpointResult.getFullName(), endpointResult.getImageUrl()));
+//            mUsersCache.cacheUser(
+//                    new User(userId, endpointResult.getFullName(), endpointResult.getImageUrl()));
         } catch (NetworkErrorException e) {
             return UseCaseResult.NETWORK_ERROR;
         }
