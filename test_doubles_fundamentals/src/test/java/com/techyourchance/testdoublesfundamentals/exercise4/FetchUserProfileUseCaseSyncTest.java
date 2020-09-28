@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.techyourchance.testdoublesfundamentals.exercise4.FetchUserProfileUseCaseSync.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -55,15 +56,16 @@ public class FetchUserProfileUseCaseSyncTest {
     }
 
     // General 에러 발생하면 UserCache 에 저장되지 않는다.
+
     @Test
     public void fetchProfile_generalError_userNotCached() {
         userProfileHttpEndpointSyncTd.isGeneralError = true;
         fetchUserProfileUseCaseSync.fetchUserProfileSync(USER_ID);
 
-        assertThat(usersCacheTd.cachedCount, is(1));
+        assertThat(usersCacheTd.cachedCount, is(0));
     }
-
     // Network 에러인 경우 UserCache 에 저장되지 않는다.
+
     @Test
     public void fetchProfile_networkError_userNotCached() {
         userProfileHttpEndpointSyncTd.isNetworkError = true;
@@ -71,8 +73,8 @@ public class FetchUserProfileUseCaseSyncTest {
 
         assertThat(usersCacheTd.cachedCount, is(0));
     }
+    // 서버 에러인 경우 UserCache 에 저장되지 않는다.
 
-    // 서버 에러인 경우
     @Test
     public void fetchProfile_serverError_userNotCached() {
         userProfileHttpEndpointSyncTd.isServerError = true;
@@ -81,7 +83,34 @@ public class FetchUserProfileUseCaseSyncTest {
         assertThat(usersCacheTd.cachedCount, is(0));
     }
 
-    // User profile 가져오기 성공하는 경우
+    // User profile 가져오기 성공하는 경우 - Success return 된다.
+    @Test
+    public void fetchProfile_success_successReturned() {
+        UseCaseResult result =
+                fetchUserProfileUseCaseSync.fetchUserProfileSync(USER_ID);
+
+        assertThat(result, is(UseCaseResult.SUCCESS));
+    }
+
+    // General error 인 경우 - General error return된다.
+    @Test
+    public void fetchProfile_generalError_generalErrorReturned() {
+        userProfileHttpEndpointSyncTd.isGeneralError = true;
+        UseCaseResult result =
+                fetchUserProfileUseCaseSync.fetchUserProfileSync(USER_ID);
+
+        assertThat(result, is(UseCaseResult.FAILURE));
+    }
+
+    // Network error 인 경우 - Network error return 된다.
+    @Test
+    public void fetchProfile_networkError_generalErrorReturned() {
+        userProfileHttpEndpointSyncTd.isNetworkError = true;
+        UseCaseResult result =
+                fetchUserProfileUseCaseSync.fetchUserProfileSync(USER_ID);
+
+        assertThat(result, is(UseCaseResult.NETWORK_ERROR));
+    }
 
     private static class UserProfileHttpEndpointSyncTd implements UserProfileHttpEndpointSync {
 
