@@ -27,7 +27,7 @@ public class FetchUserProfileUseCaseSync {
         EndpointResult endpointResult;
         try {
             // the bug here is that userId is not passed to endpoint
-            endpointResult = mUserProfileHttpEndpointSync.getUserProfile("");
+            endpointResult = mUserProfileHttpEndpointSync.getUserProfile(userId);
             // the bug here is that I don't check for successful result and it's also a duplication
             // of the call later in this method
             mUsersCache.cacheUser(
