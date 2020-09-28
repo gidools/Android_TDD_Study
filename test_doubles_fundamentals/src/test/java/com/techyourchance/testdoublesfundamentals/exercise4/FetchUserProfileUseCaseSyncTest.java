@@ -15,6 +15,8 @@ import static org.hamcrest.core.Is.is;
 public class FetchUserProfileUseCaseSyncTest {
 
     public static final String USER_ID = "user_id";
+    public static final String USER_FULL_NAME = "Jack Sparrow";
+    public static final String PROFILE_IMG_URL = "http://www.maxst.com/img.png";
 
     // Please read description.txt content
 
@@ -56,7 +58,7 @@ public class FetchUserProfileUseCaseSyncTest {
         @Override
         public EndpointResult getUserProfile(String userId) throws NetworkErrorException {
             this.userId = userId;
-            return null;
+            return new EndpointResult(EndpointResultStatus.SUCCESS, userId, USER_FULL_NAME, PROFILE_IMG_URL);
         }
     };
 
