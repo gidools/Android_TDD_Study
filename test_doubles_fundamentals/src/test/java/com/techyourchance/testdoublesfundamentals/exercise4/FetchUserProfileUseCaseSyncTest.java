@@ -57,14 +57,16 @@ public class FetchUserProfileUseCaseSyncTest {
     @Test
     public void fetchProfile_generalError_userNotCached() {
         userProfileHttpEndpointSyncTd.isGeneralError = true;
+        fetchUserProfileUseCaseSync.fetchUserProfileSync(USER_ID);
 
-        assertThat(usersCacheTd.userId, is(EMPTY_USER_ID));
+        assertThat(usersCacheTd.userId, is(USER_ID));
     }
 
     // Network 에러인 경우 UserCache 에 저장되지 않는다.
     @Test
     public void fetchProfile_networkError_userNotCached() {
         userProfileHttpEndpointSyncTd.isNetworkError = true;
+        fetchUserProfileUseCaseSync.fetchUserProfileSync(USER_ID);
 
         assertThat(usersCacheTd.userId, is(EMPTY_USER_ID));
     }
@@ -72,9 +74,10 @@ public class FetchUserProfileUseCaseSyncTest {
     // 서버 에러인 경우
     @Test
     public void fetchProfile_serverError_userNotCached() {
-        userProfileHttpEndpointSyncTd.isNetworkError = true;
+        userProfileHttpEndpointSyncTd.isServerError = true;
+        fetchUserProfileUseCaseSync.fetchUserProfileSync(USER_ID);
 
-        assertThat(usersCacheTd.userId, is(EMPTY_USER_ID));
+        assertThat(usersCacheTd.userId, is(USER_ID));
     }
 
     // User profile 가져오기 성공하는 경우
