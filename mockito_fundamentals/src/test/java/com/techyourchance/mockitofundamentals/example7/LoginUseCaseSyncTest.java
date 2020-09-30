@@ -8,10 +8,17 @@ import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpo
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
+
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class LoginUseCaseSyncTest {
 
@@ -29,14 +36,21 @@ public class LoginUseCaseSyncTest {
 
     @Before
     public void setup() throws Exception {
-        SUT = new LoginUseCaseSync();
+        mLoginHttpEndpointSyncMock = mock(LoginHttpEndpointSync.class);
+        mAuthTokenCacheMock = mock(AuthTokenCache.class);
+        mEventBusPosterMock = mock(EventBusPoster.class);
+        SUT = new LoginUseCaseSync(mLoginHttpEndpointSyncMock, mAuthTokenCacheMock, mEventBusPosterMock);
     }
 
     @Test
     public void loginSync_success_usernameAndPasswordPassedToEndpoint() throws Exception {
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mLoginHttpEndpointSyncMock.mUsername, is(USERNAME));
-//        assertThat(mLoginHttpEndpointSyncMock.mPassword, is(PASSWORD));
+        ArgumentCaptor<String> ac = ArgumentCaptor.forClass(String.class);
+        SUT.loginSync(USERNAME, PASSWORD);
+        verify(mLoginHttpEndpointSyncMock, times(1)).
+                loginSync(ac.capture(), ac.capture());
+        List<String> captures = ac.getAllValues();
+        assertThat(captures.get(0), is(USERNAME));
+        assertThat(captures.get(1), is(PASSWORD));
     }
 
     @Test
