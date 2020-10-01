@@ -2,6 +2,7 @@ package com.techyourchance.mockitofundamentals.example7;
 
 import com.techyourchance.mockitofundamentals.example7.authtoken.AuthTokenCache;
 import com.techyourchance.mockitofundamentals.example7.eventbus.EventBusPoster;
+import com.techyourchance.mockitofundamentals.example7.eventbus.LoggedInEvent;
 import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync;
 import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync.EndpointResult;
 import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync.EndpointResultStatus;
@@ -13,12 +14,15 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class LoginUseCaseSyncTest {
@@ -65,94 +69,119 @@ public class LoginUseCaseSyncTest {
 
     @Test
     public void loginSync_success_authTokenCached() throws Exception {
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mAuthTokenCacheMock.getAuthToken(), is(AUTH_TOKEN));
+        ArgumentCaptor<String> ac = ArgumentCaptor.forClass(String.class);
+        SUT.loginSync(USERNAME, PASSWORD);
+        verify(mAuthTokenCacheMock).cacheAuthToken(ac.capture());
+        assertThat(ac.getValue(), is(AUTH_TOKEN));
     }
 
     @Test
     public void loginSync_generalError_authTokenNotCached() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsGeneralError = true;
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mAuthTokenCacheMock.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
+        mockGeneralError();
+        SUT.loginSync(USERNAME, PASSWORD);
+        verifyNoMoreInteractions(mAuthTokenCacheMock);
     }
 
     @Test
     public void loginSync_authError_authTokenNotCached() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsAuthError = true;
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mAuthTokenCacheMock.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
+        mockAuthError();
+        SUT.loginSync(USERNAME, PASSWORD);
+        verifyNoMoreInteractions(mAuthTokenCacheMock);
     }
 
     @Test
     public void loginSync_serverError_authTokenNotCached() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsServerError = true;
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mAuthTokenCacheMock.getAuthToken(), is(NON_INITIALIZED_AUTH_TOKEN));
+        mockServerError();
+        SUT.loginSync(USERNAME, PASSWORD);
+        verifyNoMoreInteractions(mAuthTokenCacheMock);
     }
 
     @Test
     public void loginSync_success_loggedInEventPosted() throws Exception {
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mEventBusPosterMock.mEvent, is(instanceOf(LoggedInEvent.class)));
+        ArgumentCaptor<Object> ac = ArgumentCaptor.forClass(Object.class);
+        SUT.loginSync(USERNAME, PASSWORD);
+        verify(mEventBusPosterMock).postEvent(ac.capture());
+        assertThat(ac.getValue(), is(instanceOf(LoggedInEvent.class)));
     }
 
     @Test
     public void loginSync_generalError_noInteractionWithEventBusPoster() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsGeneralError = true;
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mEventBusPosterMock.mInteractionsCount, is(0));
+        mockGeneralError();
+        SUT.loginSync(USERNAME, PASSWORD);
+        verifyNoMoreInteractions(mEventBusPosterMock);
     }
 
     @Test
     public void loginSync_authError_noInteractionWithEventBusPoster() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsAuthError = true;
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mEventBusPosterMock.mInteractionsCount, is(0));
+        mockAuthError();
+        SUT.loginSync(USERNAME, PASSWORD);
+        verifyNoMoreInteractions(mEventBusPosterMock);
     }
 
     @Test
     public void loginSync_serverError_noInteractionWithEventBusPoster() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsServerError = true;
-//        SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(mEventBusPosterMock.mInteractionsCount, is(0));
+        mockServerError();
+        SUT.loginSync(USERNAME, PASSWORD);
+        verifyNoMoreInteractions(mEventBusPosterMock);
     }
 
     @Test
     public void loginSync_success_successReturned() throws Exception {
-//        LoginUseCaseSync.UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(result, is(UseCaseResult.SUCCESS));
+        LoginUseCaseSync.UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+        assertThat(result, is(LoginUseCaseSync.UseCaseResult.SUCCESS));
     }
 
     @Test
     public void loginSync_serverError_failureReturned() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsServerError = true;
-//        UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(result, is(UseCaseResult.FAILURE));
+        mockServerError();
+        LoginUseCaseSync.UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+        assertThat(result, is(LoginUseCaseSync.UseCaseResult.FAILURE));
     }
 
     @Test
     public void loginSync_authError_failureReturned() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsAuthError = true;
-//        UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(result, is(UseCaseResult.FAILURE));
+        mockAuthError();
+        LoginUseCaseSync.UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+        assertThat(result, is(LoginUseCaseSync.UseCaseResult.FAILURE));
     }
 
     @Test
     public void loginSync_generalError_failureReturned() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsGeneralError = true;
-//        UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(result, is(UseCaseResult.FAILURE));
+        mockGeneralError();
+        LoginUseCaseSync.UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+        assertThat(result, is(LoginUseCaseSync.UseCaseResult.FAILURE));
     }
 
     @Test
     public void loginSync_networkError_networkErrorReturned() throws Exception {
-//        mLoginHttpEndpointSyncMock.mIsNetworkError = true;
-//        UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
-//        assertThat(result, is(UseCaseResult.NETWORK_ERROR));
+        mockNetworkError();
+        LoginUseCaseSync.UseCaseResult result = SUT.loginSync(USERNAME, PASSWORD);
+        assertThat(result, is(LoginUseCaseSync.UseCaseResult.NETWORK_ERROR));
     }
 
     private void mockLoginSuccess() throws NetworkErrorException {
         when(mLoginHttpEndpointSyncMock.loginSync(any(String.class), any(String.class)))
                 .thenReturn(new EndpointResult(EndpointResultStatus.SUCCESS, AUTH_TOKEN));
+    }
+
+    private void mockNetworkError() throws Exception {
+        doThrow(new NetworkErrorException())
+                .when(mLoginHttpEndpointSyncMock).loginSync(any(String.class), any(String.class));
+    }
+
+    private void mockGeneralError() throws Exception {
+        when(mLoginHttpEndpointSyncMock.loginSync(any(String.class), any(String.class)))
+                .thenReturn(new LoginHttpEndpointSync.EndpointResult(
+                        LoginHttpEndpointSync.EndpointResultStatus.GENERAL_ERROR, ""));
+    }
+
+    private void mockAuthError() throws Exception {
+        when(mLoginHttpEndpointSyncMock.loginSync(any(String.class), any(String.class)))
+                .thenReturn(new LoginHttpEndpointSync.EndpointResult(LoginHttpEndpointSync.EndpointResultStatus.AUTH_ERROR, ""));
+    }
+
+    private void mockServerError() throws Exception {
+        when(mLoginHttpEndpointSyncMock.loginSync(any(String.class), any(String.class)))
+                .thenReturn(new LoginHttpEndpointSync.EndpointResult(LoginHttpEndpointSync.EndpointResultStatus.SERVER_ERROR, ""));
     }
 }
