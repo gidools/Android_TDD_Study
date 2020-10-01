@@ -31,7 +31,7 @@ public class LoginUseCaseSync {
         try {
             endpointEndpointResult = mLoginHttpEndpointSync.loginSync(username, password);
         } catch (NetworkErrorException e) {
-            return UseCaseResult.NETWORK_ERROR;
+            return UseCaseResult.FAILURE;
         }
 
         mEventBusPoster.postEvent(new LoggedInEvent());
