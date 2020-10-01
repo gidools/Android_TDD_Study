@@ -38,8 +38,7 @@ public class UpdateUsernameUseCaseSync {
         }
 
         if (isSuccessfulEndpointResult(endpointResult)) {
-            // the bug here is reversed arguments
-            User user = new User(endpointResult.getUsername(), endpointResult.getUserId());
+            User user = new User(endpointResult.getUserId(), endpointResult.getUsername());
             mEventBusPoster.postEvent(new UserDetailsChangedEvent(new User(userId, username)));
             mUsersCache.cacheUser(user);
             return UseCaseResult.SUCCESS;

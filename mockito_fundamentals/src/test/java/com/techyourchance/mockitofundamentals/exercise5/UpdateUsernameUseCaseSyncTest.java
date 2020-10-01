@@ -73,8 +73,6 @@ public class UpdateUsernameUseCaseSyncTest {
 
         User user = ac.getValue();
         assertThat(user.getUserId(), is(USER_ID));
-
-        // Error occurred!!
         assertThat(user.getUsername(), is(USER_NAME));
     }
 
