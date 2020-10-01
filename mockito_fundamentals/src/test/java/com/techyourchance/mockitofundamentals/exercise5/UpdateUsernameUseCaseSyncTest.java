@@ -1,6 +1,7 @@
 package com.techyourchance.mockitofundamentals.exercise5;
 
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.EventBusPoster;
+import com.techyourchance.mockitofundamentals.exercise5.eventbus.UserDetailsChangedEvent;
 import com.techyourchance.mockitofundamentals.exercise5.networking.NetworkErrorException;
 import com.techyourchance.mockitofundamentals.exercise5.networking.UpdateUsernameHttpEndpointSync;
 import com.techyourchance.mockitofundamentals.exercise5.networking.UpdateUsernameHttpEndpointSync.EndpointResult;
@@ -14,6 +15,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -77,6 +79,22 @@ public class UpdateUsernameUseCaseSyncTest {
     }
 
     // login success : EventBusPoster do something only once
+    @Test
+    public void updateUsername_success_postEvent() throws Exception {
+        // given
+        mockLoginSuccess();
+
+        // when
+        updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+
+        // then
+        ArgumentCaptor<Object> ac = ArgumentCaptor.forClass(Object.class);
+        verify(eventBusPosterMock, times(1)).postEvent(ac.capture());
+
+        Object event = ac.getValue();
+        assertThat(event, is(instanceOf(UserDetailsChangedEvent.class)));
+    }
+
     // login fail : User information not cached
     // login fail : EventBusPoster do nothing
     // general error : General error returned
