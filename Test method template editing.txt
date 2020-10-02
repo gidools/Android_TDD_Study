@@ -1,0 +1,2 @@
+1. To edit test method template : Alt + Insert -> Edit template
+2. Test method template : Assign, Act, Assert
