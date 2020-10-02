@@ -1,5 +1,6 @@
 package com.techyourchance.mockitofundamentals.exercise5;
 
+import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.EventBusPoster;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.UserDetailsChangedEvent;
 import com.techyourchance.mockitofundamentals.exercise5.networking.NetworkErrorException;
@@ -18,10 +19,12 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class UpdateUsernameUseCaseSyncTest {
@@ -80,7 +83,7 @@ public class UpdateUsernameUseCaseSyncTest {
 
     // login success : EventBusPoster do something only once
     @Test
-    public void updateUsername_success_postEvent() throws Exception {
+    public void updateUsername_success_loginEventPosted() throws Exception {
         // given
         mockLoginSuccess();
 
@@ -96,6 +99,18 @@ public class UpdateUsernameUseCaseSyncTest {
     }
 
     // login fail : User information not cached
+    @Test
+    public void updateUsername_generalError_userNotCached() throws Exception {
+        // given
+        mockGeneralError();
+
+        // when
+        updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+
+        // then
+        verifyNoMoreInteractions(usersCacheMock);
+    }
+
     // login fail : EventBusPoster do nothing
     // general error : General error returned
     // server error : Server error returned
@@ -105,6 +120,12 @@ public class UpdateUsernameUseCaseSyncTest {
         when(usernameHttpEndpointSyncMock.updateUsername(anyString(), anyString()))
                 .thenReturn(new EndpointResult
                         (EndpointResultStatus.SUCCESS, USER_ID, USER_NAME));
+    }
+
+    private void mockGeneralError() throws Exception {
+        when(usernameHttpEndpointSyncMock.updateUsername(anyString(), anyString()))
+                .thenReturn(new EndpointResult(
+                        EndpointResultStatus.GENERAL_ERROR, "", ""));
     }
 
 }
