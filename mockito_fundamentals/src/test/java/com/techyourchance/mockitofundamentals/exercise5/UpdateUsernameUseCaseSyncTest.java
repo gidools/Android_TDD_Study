@@ -1,6 +1,7 @@
 package com.techyourchance.mockitofundamentals.exercise5;
 
 import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync;
+import com.techyourchance.mockitofundamentals.exercise5.UpdateUsernameUseCaseSync.UseCaseResult;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.EventBusPoster;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.UserDetailsChangedEvent;
 import com.techyourchance.mockitofundamentals.exercise5.networking.NetworkErrorException;
@@ -10,6 +11,8 @@ import com.techyourchance.mockitofundamentals.exercise5.networking.UpdateUsernam
 import com.techyourchance.mockitofundamentals.exercise5.users.User;
 import com.techyourchance.mockitofundamentals.exercise5.users.UsersCache;
 
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -98,7 +102,7 @@ public class UpdateUsernameUseCaseSyncTest {
         assertThat(event, is(instanceOf(UserDetailsChangedEvent.class)));
     }
 
-    // login fail : User information not cached
+    // General error. user not cached
     @Test
     public void updateUsername_generalError_userNotCached() throws Exception {
         // given
@@ -111,10 +115,59 @@ public class UpdateUsernameUseCaseSyncTest {
         verifyNoMoreInteractions(usersCacheMock);
     }
 
-    // login fail : EventBusPoster do nothing
-    // general error : General error returned
-    // server error : Server error returned
-    // network error : Network error returned
+    // auth error : user not cached
+    @Test
+    public void updateUsername_authError_userNotCached() throws Exception {
+        mockAuthError();
+        updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+        verifyNoMoreInteractions(usersCacheMock);
+    }
+
+    // server error : user not cached
+    @Test
+    public void updateUsername_serverError_userNotCached() throws Exception {
+        mockServerError();
+        updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+        verifyNoMoreInteractions(usersCacheMock);
+    }
+
+    // Success : Success returned
+    @Test
+    public void updateUsername_success_successReturned() throws Exception {
+        mockLoginSuccess();
+        UseCaseResult result = updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+        Assert.assertThat(result, CoreMatchers.is(UpdateUsernameUseCaseSync.UseCaseResult.SUCCESS));
+    }
+
+    // Server error : Server error returned
+    @Test
+    public void updateUsername_serverError_failureReturned() throws Exception {
+        mockServerError();
+        UseCaseResult result = updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+        Assert.assertThat(result, CoreMatchers.is(UseCaseResult.FAILURE));
+    }
+
+    // Auth error : Auth error returned
+    @Test
+    public void updateUsername_authError_failureReturned() throws Exception {
+        mockAuthError();
+        UseCaseResult result = updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+        Assert.assertThat(result, CoreMatchers.is(UseCaseResult.FAILURE));
+    }
+
+    @Test
+    public void updateUsername_generalError_failureReturned() throws Exception {
+        mockGeneralError();
+        UseCaseResult result = updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+        Assert.assertThat(result, CoreMatchers.is(UseCaseResult.FAILURE));
+    }
+
+    @Test
+    public void updateUsername_networkError_networkErrorReturned() throws Exception {
+        mockNetworkError();
+        UseCaseResult result = updateUsernameUseCaseSync.updateUsernameSync(USER_ID, USER_NAME);
+        Assert.assertThat(result, CoreMatchers.is(UseCaseResult.NETWORK_ERROR));
+    }
 
     private void mockLoginSuccess() throws NetworkErrorException {
         when(usernameHttpEndpointSyncMock.updateUsername(anyString(), anyString()))
@@ -122,10 +175,25 @@ public class UpdateUsernameUseCaseSyncTest {
                         (EndpointResultStatus.SUCCESS, USER_ID, USER_NAME));
     }
 
+    private void mockNetworkError() throws Exception {
+        doThrow(new NetworkErrorException())
+                .when(usernameHttpEndpointSyncMock).updateUsername(anyString(), anyString());
+    }
+
     private void mockGeneralError() throws Exception {
         when(usernameHttpEndpointSyncMock.updateUsername(anyString(), anyString()))
                 .thenReturn(new EndpointResult(
                         EndpointResultStatus.GENERAL_ERROR, "", ""));
+    }
+
+    private void mockAuthError() throws Exception {
+        when(usernameHttpEndpointSyncMock.updateUsername(anyString(), anyString()))
+                .thenReturn(new EndpointResult(EndpointResultStatus.AUTH_ERROR, "", ""));
+    }
+
+    private void mockServerError() throws Exception {
+        when(usernameHttpEndpointSyncMock.updateUsername(anyString(), anyString()))
+                .thenReturn(new EndpointResult(EndpointResultStatus.SERVER_ERROR, "", ""));
     }
 
 }

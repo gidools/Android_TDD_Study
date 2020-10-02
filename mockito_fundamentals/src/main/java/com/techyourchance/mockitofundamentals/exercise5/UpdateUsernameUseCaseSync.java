@@ -49,7 +49,6 @@ public class UpdateUsernameUseCaseSync {
 
     private boolean isSuccessfulEndpointResult(EndpointResult endpointResult) {
         // the bug here is the wrong definition of successful response
-        return endpointResult.getStatus() == EndpointResultStatus.SUCCESS
-                || endpointResult.getStatus() == EndpointResultStatus.GENERAL_ERROR;
+        return endpointResult.getStatus() == EndpointResultStatus.SUCCESS;
     }
 }
