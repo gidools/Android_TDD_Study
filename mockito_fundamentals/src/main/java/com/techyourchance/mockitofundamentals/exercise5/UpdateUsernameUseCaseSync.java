@@ -34,7 +34,7 @@ public class UpdateUsernameUseCaseSync {
         try {
             endpointResult = mUpdateUsernameHttpEndpointSync.updateUsername(userId, username);
         } catch (NetworkErrorException e) {
-            // the bug here is "swallowed" exception instead of return
+            return UseCaseResult.NETWORK_ERROR;
         }
 
         if (isSuccessfulEndpointResult(endpointResult)) {
