@@ -37,7 +37,7 @@ public class FetchUserUseCaseSyncTestRef {
     @Mock UsersCache mUsersCacheMock;
     // endregion helper fields ---------------------------------------------------------------------
 
-    private FetchUserUseCaseSync fetchUserUseCaseSync;
+    private FetchUserUseCaseSyncImpl fetchUserUseCaseSync;
 
     @Before
     public void setup() throws Exception {
