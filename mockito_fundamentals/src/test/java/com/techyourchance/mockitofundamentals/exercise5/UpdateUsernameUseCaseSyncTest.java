@@ -1,6 +1,5 @@
 package com.techyourchance.mockitofundamentals.exercise5;
 
-import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync;
 import com.techyourchance.mockitofundamentals.exercise5.UpdateUsernameUseCaseSync.UseCaseResult;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.EventBusPoster;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.UserDetailsChangedEvent;
@@ -15,14 +14,16 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -31,22 +32,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UpdateUsernameUseCaseSyncTest {
 
     public static final String USER_ID = "user_id";
     public static final String USER_NAME = "user_name";
 
     private UpdateUsernameUseCaseSync updateUsernameUseCaseSync;
-    private UpdateUsernameHttpEndpointSync usernameHttpEndpointSyncMock;
-    private UsersCache usersCacheMock;
-    private EventBusPoster eventBusPosterMock;
+
+    @Mock private UpdateUsernameHttpEndpointSync usernameHttpEndpointSyncMock;
+    @Mock private UsersCache usersCacheMock;
+    @Mock private EventBusPoster eventBusPosterMock;
 
     @Before
     public void setup() {
-        usernameHttpEndpointSyncMock = mock(UpdateUsernameHttpEndpointSync.class);
-        usersCacheMock = mock(UsersCache.class);
-        eventBusPosterMock = mock(EventBusPoster.class);
-
         updateUsernameUseCaseSync = new UpdateUsernameUseCaseSync(
                 usernameHttpEndpointSyncMock,
                 usersCacheMock,
