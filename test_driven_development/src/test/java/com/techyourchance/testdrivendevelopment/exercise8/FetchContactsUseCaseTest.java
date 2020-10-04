@@ -70,9 +70,36 @@ public class FetchContactsUseCaseTest {
 		assertThat(capture2, is(getContacts()));
 	}
 
-
 	//2) If the server request fails for any reason except network error,
 	// then registered listeners should be notified about a failure.
+	@Test
+	public void fetchContact_serverError_observersNotifiedFailure() {
+		generalError();
+
+		fetchContactsUseCase.registerListener(listenerMock1);
+		fetchContactsUseCase.registerListener(listenerMock2);
+
+		fetchContactsUseCase.fetchContactAndNotify();
+
+		verify(getContactsHttpEndpointMock)
+				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
+
+		verify(listenerMock1).onFetchContactsFailed();
+		verify(listenerMock2).onFetchContactsFailed();
+	}
+
+	private void generalError() {
+		doAnswer(new Answer() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				Object [] args = invocation.getArguments();
+				GetContactsHttpEndpoint.Callback callback = (GetContactsHttpEndpoint.Callback) args[1];
+				callback.onGetContactsFailed(GetContactsHttpEndpoint.FailReason.GENERAL_ERROR);
+				return null;
+			}
+		}).when(getContactsHttpEndpointMock)
+				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
+	}
 
 	//3) If the server request fails due to network error,
 	// then registered listeners should be notified about a network error specifically.

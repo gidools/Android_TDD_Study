@@ -46,5 +46,6 @@ public class FetchContactsUseCase {
 
 	public interface Listener {
 		void onContactsFetched(List<Contact> contacts);
+		void onFetchContactsFailed();
 	}
 }
