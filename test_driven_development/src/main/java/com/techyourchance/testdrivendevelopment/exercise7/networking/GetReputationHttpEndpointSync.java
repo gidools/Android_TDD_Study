@@ -6,7 +6,8 @@ public interface GetReputationHttpEndpointSync {
     enum EndpointStatus {
         SUCCESS,
         GENERAL_ERROR,
-        NETWORK_ERROR
+        NETWORK_ERROR,
+        SERVER_ERROR;
     }
 
     class EndpointResult {
