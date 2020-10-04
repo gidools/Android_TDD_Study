@@ -27,7 +27,9 @@ public class FetchContactsUseCase {
 
 			@Override
 			public void onGetContactsFailed(GetContactsHttpEndpoint.FailReason failReason) {
-
+				for (Listener listener : listeners) {
+					listener.onFetchContactsFailed(failReason);
+				}
 			}
 		});
 	}
@@ -46,6 +48,6 @@ public class FetchContactsUseCase {
 
 	public interface Listener {
 		void onContactsFetched(List<Contact> contacts);
-		void onFetchContactsFailed();
+		void onFetchContactsFailed(GetContactsHttpEndpoint.FailReason capture);
 	}
 }

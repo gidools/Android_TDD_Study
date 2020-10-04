@@ -3,6 +3,7 @@ package com.techyourchance.testdrivendevelopment.exercise8;
 import com.techyourchance.testdrivendevelopment.exercise8.contacts.Contact;
 import com.techyourchance.testdrivendevelopment.exercise8.networking.ContactSchema;
 import com.techyourchance.testdrivendevelopment.exercise8.networking.GetContactsHttpEndpoint;
+import com.techyourchance.testdrivendevelopment.exercise8.networking.GetContactsHttpEndpoint.FailReason;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +75,9 @@ public class FetchContactsUseCaseTest {
 	// then registered listeners should be notified about a failure.
 	@Test
 	public void fetchContact_serverError_observersNotifiedFailure() {
+		ArgumentCaptor<FailReason> ac =
+				ArgumentCaptor.forClass(FailReason.class);
+
 		generalError();
 
 		fetchContactsUseCase.registerListener(listenerMock1);
@@ -84,8 +88,46 @@ public class FetchContactsUseCaseTest {
 		verify(getContactsHttpEndpointMock)
 				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
 
-		verify(listenerMock1).onFetchContactsFailed();
-		verify(listenerMock2).onFetchContactsFailed();
+		verify(listenerMock1).onFetchContactsFailed(ac.capture());
+		verify(listenerMock2).onFetchContactsFailed(ac.capture());
+
+		assertThat(ac.getValue(), is(FailReason.GENERAL_ERROR));
+	}
+
+	//3) If the server request fails due to network error,
+	// then registered listeners should be notified about a network error specifically.
+	@Test
+	public void fetchContact_networkError_observersNotifiedFailure() {
+		ArgumentCaptor<FailReason> ac =
+				ArgumentCaptor.forClass(FailReason.class);
+
+		networkError();
+
+		fetchContactsUseCase.registerListener(listenerMock1);
+		fetchContactsUseCase.registerListener(listenerMock2);
+
+		fetchContactsUseCase.fetchContactAndNotify();
+
+		verify(getContactsHttpEndpointMock)
+				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
+
+		verify(listenerMock1).onFetchContactsFailed(ac.capture());
+		verify(listenerMock2).onFetchContactsFailed(ac.capture());
+
+		assertThat(ac.getValue(), is(FailReason.NETWORK_ERROR));
+	}
+
+	private void success() {
+		doAnswer(new Answer() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				Object [] args = invocation.getArguments();
+				GetContactsHttpEndpoint.Callback callback = (GetContactsHttpEndpoint.Callback) args[1];
+				callback.onGetContactsSucceeded(getContactSchemas());
+				return null;
+			}
+		}).when(getContactsHttpEndpointMock)
+				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
 	}
 
 	private void generalError() {
@@ -101,16 +143,13 @@ public class FetchContactsUseCaseTest {
 				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
 	}
 
-	//3) If the server request fails due to network error,
-	// then registered listeners should be notified about a network error specifically.
-
-	private void success() {
+	private void networkError() {
 		doAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				Object [] args = invocation.getArguments();
 				GetContactsHttpEndpoint.Callback callback = (GetContactsHttpEndpoint.Callback) args[1];
-				callback.onGetContactsSucceeded(getContactSchemas());
+				callback.onGetContactsFailed(GetContactsHttpEndpoint.FailReason.NETWORK_ERROR);
 				return null;
 			}
 		}).when(getContactsHttpEndpointMock)
