@@ -19,9 +19,9 @@ public class FetchContactsUseCase {
 	public void fetchContactAndNotify() {
 		getContactsHttpEndpoint.getContacts("", new GetContactsHttpEndpoint.Callback() {
 			@Override
-			public void onGetContactsSucceeded(List<ContactSchema> cartItems) {
+			public void onGetContactsSucceeded(List<ContactSchema> contactSchemas) {
 				for (Listener listener : listeners) {
-					listener.onContactsFetched(null);
+					listener.onContactsFetched(contactsFromContactSchemas(contactSchemas));
 				}
 			}
 
@@ -30,6 +30,14 @@ public class FetchContactsUseCase {
 
 			}
 		});
+	}
+
+	private List<Contact> contactsFromContactSchemas(List<ContactSchema> contactSchemas) {
+		List<Contact> contacts = new ArrayList<>();
+		for (ContactSchema schema : contactSchemas) {
+			contacts.add(new Contact(schema.getId(), schema.getFullName(), schema.getImageUrl()));
+		}
+		return contacts;
 	}
 
 	public void registerListener(Listener listener) {
