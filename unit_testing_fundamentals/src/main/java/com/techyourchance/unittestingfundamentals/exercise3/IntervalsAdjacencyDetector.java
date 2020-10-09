@@ -18,4 +18,5 @@ public class IntervalsAdjacencyDetector {
     private boolean isSameIntervals(Interval interval1, Interval interval2) {
         return interval1.getStart() == interval2.getStart() && interval1.getEnd() == interval2.getEnd();
     }
+
 }
