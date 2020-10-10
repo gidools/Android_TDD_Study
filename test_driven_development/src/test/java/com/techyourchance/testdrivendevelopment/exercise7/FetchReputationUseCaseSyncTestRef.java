@@ -22,7 +22,7 @@ The three rules:
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class FetchReputationUseCaseSyncRefTestRef {
+public class FetchReputationUseCaseSyncTestRef {
 
 	public static final int REPUTATION = 100;
 
