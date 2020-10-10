@@ -5,13 +5,13 @@ import com.techyourchance.testdrivendevelopment.exercise6.networking.NetworkErro
 import com.techyourchance.testdrivendevelopment.exercise6.users.User;
 import com.techyourchance.testdrivendevelopment.exercise6.users.UsersCache;
 
-public class FetchUserUseCaseSyncImpl implements FetchUserUseCaseSync {
+public class FetchUserUseCaseSyncImplBackup implements FetchUserUseCaseSync {
 
 	private final FetchUserHttpEndpointSync fetchUserHttpEndpointSync;
 	private final UsersCache usersCache;
 
-	public FetchUserUseCaseSyncImpl(FetchUserHttpEndpointSync fetchUserHttpEndpointSync,
-									UsersCache usersCache) {
+	public FetchUserUseCaseSyncImplBackup(FetchUserHttpEndpointSync fetchUserHttpEndpointSync,
+										  UsersCache usersCache) {
 		this.fetchUserHttpEndpointSync = fetchUserHttpEndpointSync;
 		this.usersCache = usersCache;
 	}
