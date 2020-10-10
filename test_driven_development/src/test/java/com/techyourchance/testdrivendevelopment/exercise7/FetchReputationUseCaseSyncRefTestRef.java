@@ -22,18 +22,18 @@ The three rules:
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class FetchReputationUseCaseSyncTest {
+public class FetchReputationUseCaseSyncRefTestRef {
 
 	public static final int REPUTATION = 100;
 
 	@Mock
 	GetReputationHttpEndpointSync getReputationHttpEndpointSync;
 
-	private FetchReputationUseCaseSync fetchReputationUseCaseSync;
+	private FetchReputationUseCaseSyncRef fetchReputationUseCaseSync;
 
 	@Before
 	public void setup() {
-		fetchReputationUseCaseSync = new FetchReputationUseCaseSync(getReputationHttpEndpointSync);
+		fetchReputationUseCaseSync = new FetchReputationUseCaseSyncRef(getReputationHttpEndpointSync);
 	}
 
 	//	1) If the server request completes successfully,
@@ -43,9 +43,9 @@ public class FetchReputationUseCaseSyncTest {
 	public void fetchReputation_success_successReturned() {
 		success();
 
-		FetchReputationUseCaseSync.UseCaseResult result = fetchReputationUseCaseSync.fetchReputation();
+		FetchReputationUseCaseSyncRef.UseCaseResult result = fetchReputationUseCaseSync.fetchReputation();
 
-		assertThat(result.getStatus(), is(FetchReputationUseCaseSync.Status.SUCCESS));
+		assertThat(result.getStatus(), is(FetchReputationUseCaseSyncRef.Status.SUCCESS));
 		assertThat(result.getReputation(), is(REPUTATION));
 	}
 
@@ -54,9 +54,9 @@ public class FetchReputationUseCaseSyncTest {
 	public void fetchReputation_serverError_failReturned() {
 		serverError();
 
-		FetchReputationUseCaseSync.UseCaseResult result = fetchReputationUseCaseSync.fetchReputation();
+		FetchReputationUseCaseSyncRef.UseCaseResult result = fetchReputationUseCaseSync.fetchReputation();
 
-		assertThat(result.getStatus(), is(FetchReputationUseCaseSync.Status.SERVER_ERROR));
+		assertThat(result.getStatus(), is(FetchReputationUseCaseSyncRef.Status.SERVER_ERROR));
 	}
 
 	//	4) If the server request fails for any reason, the returned reputation should be 0.
@@ -64,7 +64,7 @@ public class FetchReputationUseCaseSyncTest {
 	public void fetchReputation_serverError_reputation0Returned() {
 		serverError();
 
-		FetchReputationUseCaseSync.UseCaseResult result = fetchReputationUseCaseSync.fetchReputation();
+		FetchReputationUseCaseSyncRef.UseCaseResult result = fetchReputationUseCaseSync.fetchReputation();
 		assertThat(result.getReputation(), is(0));
 	}
 

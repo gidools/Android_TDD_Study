@@ -3,11 +3,11 @@ package com.techyourchance.testdrivendevelopment.exercise7;
 import com.techyourchance.testdrivendevelopment.exercise7.networking.GetReputationHttpEndpointSync;
 import com.techyourchance.testdrivendevelopment.exercise7.networking.GetReputationHttpEndpointSync.EndpointResult;
 
-public class FetchReputationUseCaseSync {
+public class FetchReputationUseCaseSyncRef {
 
 	private final GetReputationHttpEndpointSync getReputationHttpEndpointSync;
 
-	public FetchReputationUseCaseSync(GetReputationHttpEndpointSync getReputationHttpEndpointSync) {
+	public FetchReputationUseCaseSyncRef(GetReputationHttpEndpointSync getReputationHttpEndpointSync) {
 		this.getReputationHttpEndpointSync = getReputationHttpEndpointSync;
 	}
 
