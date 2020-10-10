@@ -7,12 +7,12 @@ import com.techyourchance.testdrivendevelopment.exercise8.networking.GetContacts
 import java.util.ArrayList;
 import java.util.List;
 
-public class FetchContactsUseCase {
+public class FetchContactsUseCaseRef {
 
 	private final GetContactsHttpEndpoint getContactsHttpEndpoint;
 	private final List<Listener> listeners = new ArrayList<>();
 
-	public FetchContactsUseCase(GetContactsHttpEndpoint getContactsHttpEndpoint) {
+	public FetchContactsUseCaseRef(GetContactsHttpEndpoint getContactsHttpEndpoint) {
 		this.getContactsHttpEndpoint = getContactsHttpEndpoint;
 	}
 

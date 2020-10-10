@@ -26,24 +26,24 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FetchContactsUseCaseTest {
+public class FetchContactsUseCaseRefTest {
 
 	public static final String ID = "id";
 	public static final String FULL_NAME = "fullName";
 	public static final String IMAGE_URL = "imageUrl";
 	public static final String FULL_PHONE_NUMBER = "01022068301";
 	public static final int AGE = 30;
-	private FetchContactsUseCase fetchContactsUseCase;
+	private FetchContactsUseCaseRef fetchContactsUseCaseRef;
 
 	@Mock private GetContactsHttpEndpoint getContactsHttpEndpointMock;
-	@Mock private FetchContactsUseCase.Listener listenerMock1;
-	@Mock private FetchContactsUseCase.Listener listenerMock2;
+	@Mock private FetchContactsUseCaseRef.Listener listenerMock1;
+	@Mock private FetchContactsUseCaseRef.Listener listenerMock2;
 
 	@Captor	ArgumentCaptor<List<Contact>> acListContact;
 
 	@Before
 	public void setUp() throws Exception {
-		fetchContactsUseCase = new FetchContactsUseCase(getContactsHttpEndpointMock);
+		fetchContactsUseCaseRef = new FetchContactsUseCaseRef(getContactsHttpEndpointMock);
 	}
 
 	//1) If the server request completes successfully,
@@ -52,10 +52,10 @@ public class FetchContactsUseCaseTest {
 	public void fetchContact_success_observersNotifiedWithCorrectData() {
 		success();
 
-		fetchContactsUseCase.registerListener(listenerMock1);
-		fetchContactsUseCase.registerListener(listenerMock2);
+		fetchContactsUseCaseRef.registerListener(listenerMock1);
+		fetchContactsUseCaseRef.registerListener(listenerMock2);
 
-		fetchContactsUseCase.fetchContactAndNotify();
+		fetchContactsUseCaseRef.fetchContactAndNotify();
 
 		verify(getContactsHttpEndpointMock)
 				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
@@ -80,10 +80,10 @@ public class FetchContactsUseCaseTest {
 
 		generalError();
 
-		fetchContactsUseCase.registerListener(listenerMock1);
-		fetchContactsUseCase.registerListener(listenerMock2);
+		fetchContactsUseCaseRef.registerListener(listenerMock1);
+		fetchContactsUseCaseRef.registerListener(listenerMock2);
 
-		fetchContactsUseCase.fetchContactAndNotify();
+		fetchContactsUseCaseRef.fetchContactAndNotify();
 
 		verify(getContactsHttpEndpointMock)
 				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
@@ -103,10 +103,10 @@ public class FetchContactsUseCaseTest {
 
 		networkError();
 
-		fetchContactsUseCase.registerListener(listenerMock1);
-		fetchContactsUseCase.registerListener(listenerMock2);
+		fetchContactsUseCaseRef.registerListener(listenerMock1);
+		fetchContactsUseCaseRef.registerListener(listenerMock2);
 
-		fetchContactsUseCase.fetchContactAndNotify();
+		fetchContactsUseCaseRef.fetchContactAndNotify();
 
 		verify(getContactsHttpEndpointMock)
 				.getContacts(anyString(), any(GetContactsHttpEndpoint.Callback.class));
