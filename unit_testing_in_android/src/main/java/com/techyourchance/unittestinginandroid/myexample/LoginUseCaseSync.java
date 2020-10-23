@@ -1,10 +1,10 @@
-package com.techyourchance.testdoublesfundamentals.example4;
+package com.techyourchance.unittestinginandroid.myexample;
 
-import com.techyourchance.testdoublesfundamentals.example4.authtoken.AuthTokenCache;
-import com.techyourchance.testdoublesfundamentals.example4.eventbus.EventBusPoster;
-import com.techyourchance.testdoublesfundamentals.example4.eventbus.LoggedInEvent;
-import com.techyourchance.testdoublesfundamentals.example4.networking.LoginHttpEndpointSync;
-import com.techyourchance.testdoublesfundamentals.example4.networking.NetworkErrorException;
+import com.techyourchance.unittestinginandroid.myexample.authtoken.AuthTokenCache;
+import com.techyourchance.unittestinginandroid.myexample.eventbus.EventBusPoster;
+import com.techyourchance.unittestinginandroid.myexample.eventbus.LoggedInEvent;
+import com.techyourchance.unittestinginandroid.myexample.networking.LoginHttpEndpointSync;
+import com.techyourchance.unittestinginandroid.myexample.networking.NetworkErrorException;
 
 public class LoginUseCaseSync {
 
@@ -31,11 +31,11 @@ public class LoginUseCaseSync {
         try {
             endpointEndpointResult = mLoginHttpEndpointSync.loginSync(username, password);
         } catch (NetworkErrorException e) {
-            return UseCaseResult.NETWORK_ERROR;
+            return UseCaseResult.FAILURE;
         }
 
+        mAuthTokenCache.cacheAuthToken(endpointEndpointResult.getAuthToken());
         if (isSuccessfulEndpointResult(endpointEndpointResult)) {
-            mAuthTokenCache.cacheAuthToken(endpointEndpointResult.getAuthToken());
             mEventBusPoster.postEvent(new LoggedInEvent());
             return UseCaseResult.SUCCESS;
         } else {

@@ -1,7 +1,53 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    
+    ext {
+        projectCompileSdkVersion = 28
+        projectMinSdkVersion = 23
+        projectTargetSdkVersion = 28
+        JavaVersion_VERSION_1_8=1.8
+        legacy_version = '1.0.0'
+        material_version = '1.1.0-alpha09'
+        recyclerview_version = '1.1.0-alpha04'
+        constraintlayout_verion = '2.0.0-beta1'
+        lifecycle_version = '2.1.0-alpha04'
+        ktx_version = '1.1.0-alpha05'
+        annotation_version = '1.0.0'
+        roomVersion = '2.1.0'
+        fragment_ktx_version='1.1.0'
+        firebase_analytics='17.2.0'
+        databinding_version='2.3.0'
+        navigationVersion = '2.2.0'
+        gson_version = '2.8.5'
+        room_version = '2.1.0-alpha06'
+        viewPagerVersion = '1.0.0'
+        kotlin_version = '1.3.31'
+        coroutine_version = '1.3.5'
+        lifecycle_version='2.2.0-rc02'
+        glide_version = '4.11.0'
+        ar_core_version='1.15.0'
+        tus_android_version='0.1.9'
+        tus_java_version='0.4.2'
+        subsampling_version='3.9.0'
+        constraintlayout_version='1.1.3'
+        appcompat_version='1.1.0'
+        glide_tranform_version='4.1.0'
+        retrofit_version = '2.8.1'
+        okhttp_version = '3.11.0'
+        jjwt_version = '0.10.5'
+        eventbus_version = '3.1.1'
+        leakcanary_version = '2.3'
+        stetho_version = '1.5.1'
+        workVersion = '2.1.0'
+        firebase_version='17.4.2'
+        firebase_message_version='20.2.0'
+        firebase_crashlytics_version='2.10.1'
+        tedpermission_version='2.2.3'
+        circleimageview_version='3.0.0'
+        dynamic_link_version = '19.1.0'
+        lottieVersion = "3.4.0"
+    }
+
     repositories {
         google()
         jcenter()
@@ -9,7 +55,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
-        
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
