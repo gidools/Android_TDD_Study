@@ -1,0 +1,14 @@
+// id, pwd 가 end point 까지 전달됨
+// 로그인 성공하면 token 이 캐쉬된다
+// General 에러가 발생하면 token 캐쉬하지 않는다.
+// 인증 에러가 발생하면 token 캐쉬하지 않는다.
+// 서버 에러가 발생하면 token 캐쉬하지 않는다.
+// 로그인 성공하면 Event bus 에 이벤트 발생한다.
+// General 에러가 발생하면 Event bus 에 이벤트 발생하지 않는다.
+// 인증 에러가 발생하면 Event bus 에 이벤트 발생하지 않는다.
+// 서버 에러가 발생하면 Event bus 에 이벤트 발생하지 않는다.
+// 로그인 성공하면 success 리턴한다
+// General 에러가 발생하면 false 리턴한다.
+// 인증 에러가 발생하면 false 리턴한다.
+// 서버 에러가 발생하면 false 리턴한다.
+// Network 에러가 발생하면 network error 리턴한다.
